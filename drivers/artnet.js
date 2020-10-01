@@ -6,7 +6,7 @@ const STATE_STOPPED = 0;
 const STATE_IDLE = 1;
 const STATE_QUICK_REFRESH = 2;
 
-// See page 45: https://artisticlicence.com/WebSiteMaster/User%20Guides/art-net.pdf 
+// See page 45: https://artisticlicence.com/WebSiteMaster/User%20Guides/art-net.pdf
 const UNIVERSE_IDLE_RETRANSMIT_INTERVAL = 800;
 
 function ArtnetDriver(deviceId = '127.0.0.1', options = {}) {
@@ -84,16 +84,18 @@ ArtnetDriver.prototype.moveToState = function (state) {
     clearInterval(this.transmissionIntervalTimer);
   }
 
-  if (state === STATE_IDLE) {
-    this.transmissionIntervalTimer = setInterval(
-      this.sendUniverse.bind(this),
-      UNIVERSE_IDLE_RETRANSMIT_INTERVAL
-    );
-  } else if (state === STATE_QUICK_REFRESH) {
-    this.quickRefreshTimeout = false;
-    this.sendUniverse();
-    this.transmissionIntervalTimer = setInterval(
-      (() => {
+  switch (state) {
+    case STATE_IDLE:
+      this.transmissionIntervalTimer = setInterval(
+        this.sendUniverse.bind(this),
+        UNIVERSE_IDLE_RETRANSMIT_INTERVAL
+      );
+      break;
+
+    case STATE_QUICK_REFRESH:
+      this.quickRefreshTimeout = false;
+      this.sendUniverse();
+      this.transmissionIntervalTimer = setInterval(() => {
         // Final quick refresh has happened and universe still not updated, revert to IDLE
         if (this.quickRefreshTimeout) {
           this.moveToState(STATE_IDLE);
@@ -105,9 +107,11 @@ ArtnetDriver.prototype.moveToState = function (state) {
             this.quickRefreshTimeout = true;
           }
         }
-      }).bind(this),
-      this.interval
-    );
+      }, this.interval);
+      break;
+
+    default:
+      break;
   }
 };
 
