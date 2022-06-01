@@ -18,7 +18,7 @@
     "light control"
   ],
   "dependencies": {
-    "serialport": "^8.0.5",
+    "serialport": "^10.4.0",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
