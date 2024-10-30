@@ -18,7 +18,7 @@
     "light control"
   ],
   "dependencies": {
-    "serialport": "^10.4.0"
+    "serialport": "^12.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
